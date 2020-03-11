@@ -1,0 +1,11 @@
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19.deps.json
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19.runtimeconfig.json
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19.runtimeconfig.dev.json
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19.dll
+/home/jon/git-clone/stima2/covid19/bin/Debug/netcoreapp3.1/covid19.pdb
+/home/jon/git-clone/stima2/covid19/obj/Debug/netcoreapp3.1/covid19.csprojAssemblyReference.cache
+/home/jon/git-clone/stima2/covid19/obj/Debug/netcoreapp3.1/covid19.AssemblyInfoInputs.cache
+/home/jon/git-clone/stima2/covid19/obj/Debug/netcoreapp3.1/covid19.AssemblyInfo.cs
+/home/jon/git-clone/stima2/covid19/obj/Debug/netcoreapp3.1/covid19.dll
+/home/jon/git-clone/stima2/covid19/obj/Debug/netcoreapp3.1/covid19.pdb
