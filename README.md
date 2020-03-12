@@ -6,6 +6,10 @@
 | Jon Felix G      | 13518025 |
 
 
+How to run the code
+
+`cd` to covid19 then `dotnet run`
+
 Also 
 
 

@@ -5,39 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-// class Tuple<City,int>{
-//     private City city;
-//     private int weight;
-
-//     public Tuple<City,int>(City a, int weight){
-//         this.city = a;
-//         this.weight = weight;
-//     }
-
-//     public int Weight{
-//         get{
-//             return this.weight;
-//         }
-//         set{
-//             this.weight = value;
-//         }
-//     }
-// }
-
 class City{
     private int population = 0; //buat populasi
     private int T = -1; //waktu pertama kota diinfeksi
     private List<Tuple<City,Double>> neighbors;
+    private string cityname;
 
     //ctor
     // Inisiasi cuman pake value, add neighbor pake addneighbors atau neighbors = 
 
-    public City(){
-        this.neighbors =  new List<Tuple<City,Double>>();
+    // public City(){
+    //     this.neighbors =  new List<Tuple<City,Double>>();
 
-    }
-    public City(int pop){
+    // }
+    public City(string name, int pop){
         this.population = pop;
+        this.cityname =  name;
         this.neighbors = new List<Tuple<City,Double>>();
     }
 
@@ -53,6 +36,15 @@ class City{
 
         set{
             this.population = value;
+        }
+    }
+
+    public string CityName{
+        get{
+            return this.cityname;
+        }
+        set{
+            this.cityname = value;
         }
     }
 
@@ -86,7 +78,7 @@ class City{
     }
 
     // Nambahin 1 tetangga
-    public void AddNeighbor(City a, int weight){
+    public void AddNeighbor(City a, double weight){
         Tuple<City,double> temp = new Tuple<City,double>(a, weight);
         this.neighbors.Add(temp);
     }
@@ -96,14 +88,12 @@ class City{
         return (this.T >= 0) ? timenow - this.T : -1;
     }
 
-    public double I(int timenow){
-        // if (this.T < 0){
-        //     return 0;
-        // } else {
-        //     return this.population/(1+(this.population-1)*Math.Exp(-0.25*this.t(timenow)));
-        // }
-
-        return (this.T < 0) ? 0 : this.population/(1+(this.population-1)*Math.Exp(-0.25*this.t(timenow)));
+    public double I(int timenow){ // Populasi masyarakat yang terkena virus
+        if (this.T == -1){
+            return 0;
+        } else {
+            return this.population/(1+(this.population-1)*Math.Exp(-0.25*this.t(timenow)));
+        }
     }
 
 }
@@ -121,23 +111,119 @@ class CityGraph{
         }
     }
 
+    public List<City> CityList{
+        get{
+            return this.citylist;
+        }
+    }
+
     public void AddCity(City a){
         this.citylist.Add(a);
     }
 
-    public double S(City a, City b, int timenow){
-        return a.I(timenow)*a.Tr(b);
+    public double S(String x, String y, int time){
+        City a = this.CityList.Find(aa => aa.CityName == x);
+        City b = this.CityList.Find(x => x.CityName == y);
+        return a.I(time) * a.Tr(b);
     }
 
     // Implementassin BFS disini
+
+    public void init(ref Queue<Tuple<String,String>> queuein, string a){
+        City temp = this.CityList.Find(x => x.CityName == a);
+        
+        temp.InfectedTime = 0;
+
+        foreach(Tuple<City,double> y in temp.Neighbors){
+            queuein.Enqueue(new Tuple<String, String>(temp.CityName, y.Item1.CityName));
+        }
+    }
     // Fungsi menerima reference queue
+    private void simulate(ref Queue<Tuple<String,String>> queuein, int time){
+        Tuple<String,String> a = queuein.Dequeue();
+        String fcity = this.CityList.Find(x => x.CityName == a.Item1).CityName;
+        String tcity = this.CityList.Find(x => x.CityName == a.Item2).CityName;
+        if (S(fcity, tcity, time) >= 1){ // Cek apakah terinfeksi
+            int t = 0;
+
+            while (S(fcity,tcity,t) <= 1){
+                t++; // kurang efisien tapi paling gampang
+            }
+
+            City temp = this.CityList.Find(x => x.CityName == tcity);;
+
+            if ((temp.InfectedTime != -1) && (temp.InfectedTime >= t)){
+                temp.InfectedTime = t; // set waktu infeksi
+
+                foreach(Tuple<City,double> x in temp.Neighbors){
+                    queuein.Enqueue(new Tuple<String, String>(temp.CityName, x.Item1.CityName));
+                }
+            } // else do nothing karena T(fcity) < T'(fcity), kotanya sudah terinfeksi sebelumnya
+            
+        }
+    }
+
+    public void bfs(ref Queue<Tuple<String,String>> queuein, int time){
+        while (queuein.Count > 0){
+            this.simulate(ref queuein,time);
+        }
+    }
 }
 
 class MainProgram{
     public static void Main(String[] args){
-        Queue<Tuple<City,City>> sQueue = new Queue<Tuple<City, City>>();
-        City a =  new City(900);
+        Queue<Tuple<String,String>> sQueue = new Queue<Tuple<String, String>>();
+        CityGraph ci = new CityGraph();
+
+        int time = 100;
+        
+        City a, b, c, d;
+        a = new City("a", 500);
+        b = new City("b", 1000);
+        c = new City("c", 300);
+        d = new City("d", 1000);
+
+        a.AddNeighbor(b, 0.02);
+        a.AddNeighbor(c, 0.005);
+        b.AddNeighbor(a, 0.005);
+        b.AddNeighbor(d, 0.005);
+        c.AddNeighbor(a, 0.1);
+        c.AddNeighbor(b, 0.1);
+        d.AddNeighbor(a, 0.05);
+        d.AddNeighbor(c, 0.1);
+
+        ci.AddCity(a);
+        ci.AddCity(b);
+        ci.AddCity(c);
+        ci.AddCity(d);
+
+        Console.WriteLine(a.Neighbors.Find(x => x.Item1.CityName == "b").Item2);
+
+        Console.WriteLine(ci.CityList.Find(x => x.CityName == "a").Neighbors.Find(x => x.Item1.CityName == "b").Item2);
+
+
+        // Set infected time
+        ci.init(ref sQueue, "b"); // Virus mulai dari b
+
+        ci.init(ref sQueue, "a");
+
+        Console.WriteLine(ci.S(a.CityName, b.CityName, time));
+
+        // Dequeue blm jalan
+
+        Tuple<String,String> aa = sQueue.Dequeue();
+
+        Console.WriteLine(aa.Item1, " ", aa.Item2);
+
+        ci.bfs(ref sQueue, time);
+
+        foreach(City x in ci.CityList){
+            //if (x.InfectedTime >= 0){
+                Console.WriteLine(x.CityName + " " + x.InfectedTime);
+            //}
+        }
 
         Console.WriteLine("Testing Successful");
     }
+
 }
