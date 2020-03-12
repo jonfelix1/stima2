@@ -9,7 +9,7 @@ class City{
     private int population = 0; //buat populasi
     private int T = -1; //waktu pertama kota diinfeksi
     private List<Tuple<City,Double>> neighbors;
-    private string cityname;
+    private String cityname;
 
     //ctor
     // Inisiasi cuman pake value, add neighbor pake addneighbors atau neighbors = 
@@ -18,7 +18,7 @@ class City{
     //     this.neighbors =  new List<Tuple<City,Double>>();
 
     // }
-    public City(string name, int pop){
+    public City(String name, int pop){
         this.population = pop;
         this.cityname =  name;
         this.neighbors = new List<Tuple<City,Double>>();
@@ -134,29 +134,32 @@ class CityGraph{
         
         temp.InfectedTime = 0;
 
-        foreach(Tuple<City,double> y in temp.Neighbors){
+        Console.WriteLine(temp.NeighborsCount);
+
+        //queuein.Enqueue(new Tuple<String, String>(temp.CityName, temp.Neighbors[0].Item1.CityName));
+
+        foreach(var y in temp.Neighbors){
             queuein.Enqueue(new Tuple<String, String>(temp.CityName, y.Item1.CityName));
         }
     }
     // Fungsi menerima reference queue
     private void simulate(ref Queue<Tuple<String,String>> queuein, int time){
         Tuple<String,String> a = queuein.Dequeue();
-        String fcity = this.CityList.Find(x => x.CityName == a.Item1).CityName;
-        String tcity = this.CityList.Find(x => x.CityName == a.Item2).CityName;
-        if (S(fcity, tcity, time) >= 1){ // Cek apakah terinfeksi
+        Console.WriteLine("hehehe " + a.Item1 + " " + a.Item2);
+        //String fcity = this.CityList.Find(x => x.CityName == a.Item1).CityName;
+        City tcity = this.CityList.Find(x => x.CityName == a.Item2);
+        if (S(a.Item1, a.Item2, time) >= 1){ // Cek apakah terinfeksi
             int t = 0;
 
-            while (S(fcity,tcity,t) <= 1){
+            while (S(a.Item1, a.Item2, t) <= 1){
                 t++; // kurang efisien tapi paling gampang
             }
 
-            City temp = this.CityList.Find(x => x.CityName == tcity);;
+            if ((tcity.InfectedTime == -1) || (tcity.InfectedTime >= t)){
+                tcity.InfectedTime = t; // set waktu infeksi
 
-            if ((temp.InfectedTime != -1) && (temp.InfectedTime >= t)){
-                temp.InfectedTime = t; // set waktu infeksi
-
-                foreach(Tuple<City,double> x in temp.Neighbors){
-                    queuein.Enqueue(new Tuple<String, String>(temp.CityName, x.Item1.CityName));
+                foreach(var x in tcity.Neighbors){
+                    queuein.Enqueue(new Tuple<String, String>(tcity.CityName, x.Item1.CityName));
                 }
             } // else do nothing karena T(fcity) < T'(fcity), kotanya sudah terinfeksi sebelumnya
             
@@ -165,7 +168,7 @@ class CityGraph{
 
     public void bfs(ref Queue<Tuple<String,String>> queuein, int time){
         while (queuein.Count > 0){
-            this.simulate(ref queuein,time);
+            this.simulate(ref queuein , time);
         }
     }
 }
@@ -175,7 +178,7 @@ class MainProgram{
         Queue<Tuple<String,String>> sQueue = new Queue<Tuple<String, String>>();
         CityGraph ci = new CityGraph();
 
-        int time = 100;
+        int time = 30;
         
         City a, b, c, d;
         a = new City("a", 500);
@@ -202,18 +205,31 @@ class MainProgram{
         Console.WriteLine(ci.CityList.Find(x => x.CityName == "a").Neighbors.Find(x => x.Item1.CityName == "b").Item2);
 
 
-        // Set infected time
-        ci.init(ref sQueue, "b"); // Virus mulai dari b
+        Console.WriteLine(a.NeighborsCount);
 
-        ci.init(ref sQueue, "a");
+        foreach (var item in a.Neighbors){
+            Console.WriteLine(item.Item1.CityName);
+            Console.WriteLine(item.Item2);
+        }
+
+        // Set infected time
+        ci.init(ref sQueue, "a"); // Virus mulai dari b
+
+        //ci.init(ref sQueue, "a");
 
         Console.WriteLine(ci.S(a.CityName, b.CityName, time));
 
+        Console.WriteLine(sQueue.Count);
+
         // Dequeue blm jalan
 
-        Tuple<String,String> aa = sQueue.Dequeue();
+        // Tuple<String,String> aa = sQueue.Dequeue();
 
-        Console.WriteLine(aa.Item1, " ", aa.Item2);
+        // Console.WriteLine(aa.Item1 + " " + aa.Item2);
+        
+        // aa = sQueue.Dequeue();
+
+        // Console.WriteLine(aa.Item1 + " " + aa.Item2);
 
         ci.bfs(ref sQueue, time);
 
