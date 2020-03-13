@@ -27,7 +27,7 @@ class City{
     //cctor gk perlu
     //dtor.. emg mau isi apa?
 
-    //method
+    //Method untuk getter dan setter atribut
 
     public int Population{
         get{
@@ -72,28 +72,26 @@ class City{
         }
     }
 
+    // Fungsi yang implisit setiap kota untuk keperluan simulasi
     public double Tr(City b){
+        // Travel rate dari kota ini ke kota b
         double temp = this.neighbors.Find(x => x.Item1 == b).Item2;
         return temp;
     }
 
-    // Nambahin 1 tetangga
     public void AddNeighbor(City a, double weight){
+        // Nambahin 1 tetangga
         Tuple<City,double> temp = new Tuple<City,double>(a, weight);
         this.neighbors.Add(temp);
     }
 
-    // Fungsi yang ada di spek
     public int t(int timenow){
+        // Fungsi untuk mencari hari setelah diinfeksi
         return (this.T >= 0) ? timenow - this.T : -1;
     }
 
     public double I(int timenow){ // Populasi masyarakat yang terkena virus
-        if (this.T == -1){
-            return 0;
-        } else {
-            return this.population/(1+(this.population-1)*Math.Exp(-0.25*this.t(timenow)));
-        }
+        return (this.T == -1) ? 0 : this.population/(1+(this.population-1)*Math.Exp(-0.25*this.t(timenow)));
     }
 
 }
@@ -101,10 +99,12 @@ class City{
 class CityGraph{
     private List<City> citylist;
 
+    //Ctor
     public CityGraph(){
         this.citylist = new List<City>();
     }
 
+    //Method
     public int Size{
         get{
             return this.citylist.Count;
@@ -127,7 +127,7 @@ class CityGraph{
         return a.I(time) * a.Tr(b);
     }
 
-    // Implementassin BFS disini
+    // Implementasi BFS disini
 
     public void init(ref Queue<Tuple<String,String>> queuein, string a){
         City temp = this.CityList.Find(x => x.CityName == a);
@@ -136,8 +136,6 @@ class CityGraph{
 
         Console.WriteLine(temp.NeighborsCount);
 
-        //queuein.Enqueue(new Tuple<String, String>(temp.CityName, temp.Neighbors[0].Item1.CityName));
-
         foreach(var y in temp.Neighbors){
             queuein.Enqueue(new Tuple<String, String>(temp.CityName, y.Item1.CityName));
         }
@@ -145,8 +143,8 @@ class CityGraph{
     // Fungsi menerima reference queue
     private void simulate(ref Queue<Tuple<String,String>> queuein, int time){
         Tuple<String,String> a = queuein.Dequeue();
-        Console.WriteLine("hehehe " + a.Item1 + " " + a.Item2);
-        //String fcity = this.CityList.Find(x => x.CityName == a.Item1).CityName;
+        //Console.WriteLine("queue " + a.Item1 + " -> " + a.Item2 + " executed"); 
+        //City fcity = this.CityList.Find(x => x.CityName == a.Item1).CityName; gak perlu karena from city tidak dimodifikasi
         City tcity = this.CityList.Find(x => x.CityName == a.Item2);
         if (S(a.Item1, a.Item2, time) >= 1){ // Cek apakah terinfeksi
             int t = 0;
@@ -173,7 +171,7 @@ class CityGraph{
     }
 }
 
-class MainProgram{
+class TestBackEnd{ // Hanya untuk keperluan testing
     public static void Main(String[] args){
         Queue<Tuple<String,String>> sQueue = new Queue<Tuple<String, String>>();
         CityGraph ci = new CityGraph();
