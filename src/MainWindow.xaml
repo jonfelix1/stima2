@@ -1,0 +1,28 @@
+﻿<Window x:Class="VisualizerCovid19.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VisualizerCovid19"
+        xmlns:gv="clr-namespace:Microsoft.Msagl.GraphViewerGdi;assembly=Microsoft.Msagl.GraphViewerGDI"
+        mc:Ignorable="d"
+        Title="Penguin Logistics Inc" Height="450" Width="800" ResizeMode="NoResize">
+
+    <Grid>
+        <WindowsFormsHost Name="windowsFormsHost1" Margin="0,0,0,0" Width="600" HorizontalAlignment="Left">
+            <gv:GViewer x:Name="gViewer" ToolBarIsVisible="False"></gv:GViewer>
+        </WindowsFormsHost>
+        <Button x:Name="ShowButton" Content="Hasil" HorizontalAlignment="Left" Margin="647,282,0,0" VerticalAlignment="Top" Width="100" Click="ShowButton_Click" Panel.ZIndex="10"/>
+        <TextBox x:Name="DayInputBox" HorizontalAlignment="Left" Height="22" Margin="617,109,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="165" TextDecorations="{x:Null}"/>
+        <TextBox x:Name="PopulationFileNameInputBox" HorizontalAlignment="Left" Height="22" Margin="617,175,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="165"/>
+        <TextBox x:Name="RoutesFileNameInputBox" HorizontalAlignment="Left" Height="22" Margin="617,223,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="165"/>
+        <TextBlock HorizontalAlignment="Left" Margin="617,10,0,0" TextWrapping="Wrap" Text="Welcome to Penguin Logistics Virus Simulator" VerticalAlignment="Top" Height="55" Width="165" TextAlignment="Center" FontFamily="Verdana" FontSize="16"/>
+        <TextBlock HorizontalAlignment="Left" Margin="617,88,0,0" TextWrapping="Wrap" Text="Input Hari" VerticalAlignment="Top" Width="165"/>
+        <TextBlock HorizontalAlignment="Left" Margin="617,154,0,0" TextWrapping="Wrap" Text="File Population" VerticalAlignment="Top" Width="165"/>
+        <TextBlock HorizontalAlignment="Left" Margin="617,202,0,0" TextWrapping="Wrap" Text="File Routes" VerticalAlignment="Top" Width="165"/>
+
+
+    </Grid>
+</Window>
+
+
